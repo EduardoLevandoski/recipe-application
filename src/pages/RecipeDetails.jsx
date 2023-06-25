@@ -8,8 +8,6 @@ import { BsBookmark } from "react-icons/bs";
 function RecipeDetails() {
   const { id } = useParams();
 
-  // Fetch the recipe details using the ID from an API or a data source
-  // For this example, we'll use a dummy recipe object
   const recipe = {
     id: 1,
     title: "Pancake",
@@ -20,7 +18,6 @@ function RecipeDetails() {
     rating: 4.5,
   };
 
-  // Helper function to render star rating with star icons
   function renderStarRating(rating) {
     const stars = [];
     const fullStars = Math.floor(rating);
