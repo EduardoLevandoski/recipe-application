@@ -1,12 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavbarUser from "../components/NavbarUser";
+import { useParams } from "react-router-dom";
 
 function EditRecipe() {
+  const { id } = useParams();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [ingredients, setIngredients] = useState([]);
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState("");
+
+  useEffect(() => {
+    fetchRecipeDetails();
+  }, [id]);
+
+  const fetchRecipeDetails = async () => {
+    try {
+      const response = await fetch(`/api/recipes/${id}`);
+      const recipeData = await response.json();
+
+      setTitle(recipeData.title);
+      setDescription(recipeData.description);
+      setIngredients([...recipeData.ingredients]);
+      setInstructions(recipeData.instructions);
+      setImage(recipeData.image);
+    } catch (error) {
+      console.log("Error fetching recipe details:", error);
+    }
+  };
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -40,20 +62,40 @@ function EditRecipe() {
     setImage(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Recipe submitted:", {
+
+    const recipeData = {
+      id,
       title,
       description,
       ingredients,
       instructions,
       image,
-    });
-    setTitle("");
-    setDescription("");
-    setIngredients([]);
-    setInstructions("");
-    setImage("");
+    };
+
+    try {
+      const response = await fetch("/api/recipes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(recipeData),
+      });
+
+      if (response.ok) {
+        setTitle("");
+        setDescription("");
+        setIngredients([]);
+        setInstructions("");
+        setImage("");
+        console.log("Recipe updated successfully!");
+      } else {
+        console.log("Failed to update recipe.");
+      }
+    } catch (error) {
+      console.log("Error updating recipe:", error);
+    }
   };
 
   return (

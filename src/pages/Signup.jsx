@@ -7,14 +7,58 @@ function SignupPage() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [username, setUsername] = React.useState("");
+  const [selectedFile, setSelectedFile] = React.useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       alert("Password and Confirm Password do not match. Please try again.");
       return;
     }
-    navigate("/");
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64Image = reader.result.split(",")[1];
+
+      const userData = {
+        email,
+        password,
+        username,
+        image: base64Image,
+      };
+
+      try {
+        const response = await fetch("api/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+
+        if (response.ok) {
+          alert("Signup successful!");
+          navigate("/");
+        } else {
+          throw new Error("Signup failed.");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Signup failed. Please try again later.");
+      }
+    };
+
+    if (selectedFile) {
+      reader.readAsDataURL(selectedFile);
+    } else {
+      alert("Please select an image.");
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
   };
 
   return (
@@ -64,6 +108,31 @@ function SignupPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="username" className="form-label">
+                      Username:
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="file" className="form-label">
+                      Profile Picture:
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      id="file"
+                      onChange={handleFileChange}
+                      accept="image/*"
                     />
                   </div>
                   <div className="d-flex justify-content-center mb-2">

@@ -1,23 +1,83 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import NavbarUser from "../components/NavbarUser";
-import pancakeImage from "/images/pancake.jpg";
+import { Spinner } from "react-bootstrap";
 import { BsStarFill, BsStarHalf, BsStar } from "react-icons/bs";
 import { BsBookmarkFill, BsBookmark } from "react-icons/bs";
+import AuthenticatedPage from "../hocs/AuthenticatedPage";
 
 function RecipeDetails() {
   const { id } = useParams();
 
-  const [isBookmarked, setBookmarked] = React.useState(false);
-  const [rating, setRating] = React.useState(0);
-  const [hoverRating, setHoverRating] = React.useState(0);
+  const [recipe, setRecipe] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [isBookmarked, setBookmarked] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [comment, setComment] = useState("");
 
-  const handleBookmarkToggle = () => {
-    setBookmarked(!isBookmarked);
+  useEffect(() => {
+    fetchRecipe(id);
+    fetchComments(id);
+  }, [id]);
+
+  const fetchRecipe = async (id) => {
+    try {
+      const response = await fetch(`/api/recipes/${id}`);
+      const data = await response.json();
+      setRecipe(data);
+    } catch (error) {
+      console.error("Error fetching recipe details:", error);
+    }
   };
 
-  const handleStarClick = (selectedRating) => {
-    setRating(selectedRating);
+  const fetchComments = async (id) => {
+    try {
+      const response = await fetch(`/api/recipes/${id}/comments`);
+      const data = await response.json();
+      setComments(data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  const handleBookmarkToggle = async () => {
+    try {
+      const response = await fetch(`/api/recipes/${id}/bookmark`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isBookmarked: !isBookmarked }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Bookmark request failed");
+      }
+
+      setBookmarked(!isBookmarked);
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+    }
+  };
+
+  const handleStarClick = async (selectedRating) => {
+    try {
+      const response = await fetch(`/api/recipes/${id}/rating`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ rating: selectedRating }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Star rating request failed");
+      }
+
+      setRating(selectedRating);
+    } catch (error) {
+      console.error("Error setting star rating:", error);
+    }
   };
 
   const handleStarHover = (hoveredRating) => {
@@ -68,34 +128,46 @@ function RecipeDetails() {
     return stars;
   }
 
-  const [comment, setComment] = React.useState("");
-
   const handleCommentChange = (e) => {
     setComment(e.target.value);
   };
 
-  const handleCommentSubmit = (e) => {
+  const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (comment.trim() !== "") {
-      setComment("");
-      console.log(comment);
-    } else {
+      try {
+        const response = await fetch(`/api/recipes/${id}/comments`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ comment }),
+        });
+        const data = await response.json();
+        console.log(data);
+        setComment("");
+        fetchComments(id);
+      } catch (error) {
+        console.error("Error submitting comment:", error);
+      }
     }
   };
 
-  const recipe = {
-    id: 1,
-    title: "Pancake",
-    description: "Delicious pancake recipe with sweet toppings.",
-    ingredients: ["Flour", "Milk", "Eggs", "Sugar", "Butter", "Baking Powder"],
-    instructions: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-    image: pancakeImage,
-    rating: 4.5,
-  };
+  if (!recipe) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
+  }
 
   return (
     <>
-      <NavbarUser />
       <div className="container">
         <div className="row mt-5">
           <div className="col-md-6">
@@ -171,18 +243,12 @@ function RecipeDetails() {
                 </button>
               </div>
               <div>
-                <div className="comment">
-                  <p className="username">Example User 1:</p>
-                  <p className="comment-text">This recipe is amazing!</p>
-                </div>
-                <div className="comment">
-                  <p className="username">Example User 2:</p>
-                  <p className="comment-text">I love how easy it is to make.</p>
-                </div>
-                <div className="comment">
-                  <p className="username">Example User 3:</p>
-                  <p className="comment-text">The flavors are incredible!</p>
-                </div>
+                {comments.map((comment) => (
+                  <div className="comment" key={comment.id}>
+                    <p className="username">{comment.user}</p>
+                    <p className="comment-text">{comment.text}</p>
+                  </div>
+                ))}
               </div>
             </form>
           </div>
@@ -192,4 +258,4 @@ function RecipeDetails() {
   );
 }
 
-export default RecipeDetails;
+export default AuthenticatedPage(RecipeDetails);

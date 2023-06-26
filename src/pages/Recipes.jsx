@@ -1,62 +1,113 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BsStarFill, BsStarHalf, BsStar } from "react-icons/bs";
 import { HiBookmark, HiOutlineBookmark } from "react-icons/hi";
-import NavbarUser from "../components/NavbarUser";
-import pancakeImage from "/images/pancake.jpg";
 import { Link } from "react-router-dom";
-import hamburgerImage from "/images/hamburger.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import AuthenticatedPage from "../hocs/AuthenticatedPage";
 
 function Recipes() {
-  const [recipes, setRecipes] = useState([
-    {
-      id: 1,
-      title: "Recipe 1",
-      image: pancakeImage,
-      rating: 4.5,
-      isBookmarked: false,
-    },
-    {
-      id: 2,
-      title: "Recipe 2",
-      image: hamburgerImage,
-      rating: 3.8,
-      isBookmarked: false,
-    },
-  ]);
+  const [recipes, setRecipes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleBookmarkToggle = (recipeId) => {
-    setRecipes((prevRecipes) =>
-      prevRecipes.map((recipe) => {
-        if (recipe.id === recipeId) {
-          return {
-            ...recipe,
-            isBookmarked: !recipe.isBookmarked,
-          };
-        }
-        return recipe;
-      })
-    );
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+
+  const fetchRecipes = async () => {
+    try {
+      const response = await fetch("api/recipes");
+      const data = await response.json();
+      setRecipes(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`api/recipes/?search=${searchTerm}`);
+      const data = await response.json();
+      setRecipes(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleBookmarkToggle = async (recipeId) => {
+    try {
+      const response = await fetch(`api/bookmarks/${recipeId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isBookmarked: !recipe.isBookmarked }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Bookmark request failed");
+      }
+
+      setRecipes((prevRecipes) =>
+        prevRecipes.map((recipe) => {
+          if (recipe.id === recipeId) {
+            return {
+              ...recipe,
+              isBookmarked: !recipe.isBookmarked,
+            };
+          }
+          return recipe;
+        })
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const renderStarRating = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<BsStarFill key={i} />);
+    }
+
+    if (hasHalfStar) {
+      stars.push(<BsStarHalf key={fullStars} />);
+    }
+
+    const remainingStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    for (let i = 0; i < remainingStars; i++) {
+      stars.push(<BsStar key={fullStars + (hasHalfStar ? 1 : 0) + i} />);
+    }
+
+    return stars;
   };
 
   return (
     <div>
-      <NavbarUser />
       <div className="container mt-4">
         <div className="d-flex align-items-center justify-content-between mb-3">
           <h1 className="me-auto">Recipes</h1>
-          <div className="input-group" style={{ width: "300px" }}>
+          <form
+            onSubmit={handleSearch}
+            className="input-group"
+            style={{ width: "300px" }}
+          >
             <input
               id="search-input"
               type="search"
               className="form-control"
               placeholder="Search"
               style={{ width: "200px" }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
               id="search-button"
-              type="button"
+              type="submit"
               className="btn btn-primary"
               style={{ backgroundColor: "orange", borderColor: "orange" }}
               onMouseEnter={(e) =>
@@ -66,7 +117,7 @@ function Recipes() {
             >
               <FontAwesomeIcon icon={faSearch} />
             </button>
-          </div>
+          </form>
         </div>
         <div className="row row-cols-1 row-cols-md-3 g-4 mb-5">
           {recipes.map((recipe) => (
@@ -114,25 +165,4 @@ function Recipes() {
   );
 }
 
-function renderStarRating(rating) {
-  const stars = [];
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
-
-  for (let i = 0; i < fullStars; i++) {
-    stars.push(<BsStarFill key={i} />);
-  }
-
-  if (hasHalfStar) {
-    stars.push(<BsStarHalf key={fullStars} />);
-  }
-
-  const remainingStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-  for (let i = 0; i < remainingStars; i++) {
-    stars.push(<BsStar key={fullStars + (hasHalfStar ? 1 : 0) + i} />);
-  }
-
-  return stars;
-}
-
-export default Recipes;
+export default AuthenticatedPage(Recipes);

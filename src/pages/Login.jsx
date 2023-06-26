@@ -1,18 +1,40 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const { login } = useContext(AuthContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email === "user@example.com" && password === "password") {
-      navigate("/");
-    } else {
-      alert("Invalid email or password. Please try again.");
+
+    const userData = {
+      username,
+      password,
+    };
+
+    try {
+      const response = await fetch("api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        login();
+        navigate("/");
+      } else {
+        alert("Invalid username or password. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Login failed. Please try again later.");
     }
   };
 
@@ -26,16 +48,16 @@ function LoginPage() {
               <div className="card-body">
                 <h1 className="card-title text-center mb-4">Login</h1>
                 <form onSubmit={handleSubmit}>
+                  {/* Form fields */}
                   <div className="mb-3">
-                    <label htmlFor="email" className="form-label">
-                      Email:
+                    <label htmlFor="username" className="form-label">
+                      Username:
                     </label>
                     <input
-                      type="email"
                       className="form-control"
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                       required
                     />
                   </div>

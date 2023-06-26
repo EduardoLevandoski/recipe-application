@@ -1,31 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BsBookmarkFill, BsBookmark } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import NavbarUser from "../components/NavbarUser";
 
 function Bookmarks() {
-  const [bookmarks, setBookmarks] = useState([
-    {
-      id: 1,
-      name: "Recipe 1",
-      description: "Description 1",
-      isBookmarked: true,
-    },
-    {
-      id: 2,
-      name: "Recipe 2",
-      description: "Description 2",
-      isBookmarked: true,
-    },
-    {
-      id: 3,
-      name: "Recipe 3",
-      description: "Description 3",
-      isBookmarked: true,
-    },
-  ]);
+  const [bookmarks, setBookmarks] = useState([]);
 
-  const handleBookmarkToggle = (bookmarkId) => {
+  useEffect(() => {
+    fetchBookmarks();
+  }, []);
+
+  const fetchBookmarks = async () => {
+    try {
+      const response = await fetch("/api/bookmarks", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch bookmarks");
+      }
+
+      const data = await response.json();
+      setBookmarks(data.bookmarks);
+    } catch (error) {
+      console.error("Error fetching bookmarks:", error);
+    }
+  };
+
+  const handleBookmarkToggle = async (bookmarkId) => {
     const updatedBookmarks = bookmarks.map((bookmark) => {
       if (bookmark.id === bookmarkId) {
         return {
@@ -36,6 +41,21 @@ function Bookmarks() {
       return bookmark;
     });
     setBookmarks(updatedBookmarks);
+
+    try {
+      const response = await fetch(`/api/bookmarks/${bookmarkId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to toggle bookmark");
+      }
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+    }
   };
 
   return (

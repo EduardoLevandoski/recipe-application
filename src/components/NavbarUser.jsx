@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BsPlus, BsBookmark, BsPerson } from "react-icons/bs";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { AuthContext } from "../context/AuthContext";
 import { Dropdown } from "react-bootstrap";
 
 function NavbarUser() {
   const navbarStyle = {
     backgroundColor: "orange",
+  };
+
+  const { logout } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   return (
@@ -50,7 +58,7 @@ function NavbarUser() {
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item href="/user-info">User Info</Dropdown.Item>
-                  <Dropdown.Item href="/leave">Leave</Dropdown.Item>
+                  <Dropdown.Item onClick={handleLogout}>Leave</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </li>

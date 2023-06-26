@@ -40,20 +40,38 @@ function CreateRecipe() {
     setImage(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Recipe submitted:", {
+
+    const recipeData = {
       title,
       description,
       ingredients,
       instructions,
       image,
-    });
-    setTitle("");
-    setDescription("");
-    setIngredients([]);
-    setInstructions("");
-    setImage("");
+    };
+
+    try {
+      const response = await fetch("/api/recipes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(recipeData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Recipe creation failed");
+      }
+
+      setTitle("");
+      setDescription("");
+      setIngredients([]);
+      setInstructions("");
+      setImage("");
+    } catch (error) {
+      console.error("Error creating recipe:", error);
+    }
   };
 
   return (
