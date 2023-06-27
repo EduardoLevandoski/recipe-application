@@ -24,7 +24,7 @@ function Bookmarks() {
       }
 
       const data = await response.json();
-      setBookmarks(data.bookmarks);
+      setBookmarks(data);
     } catch (error) {
       console.error("Error fetching bookmarks:", error);
     }
@@ -77,8 +77,8 @@ function Bookmarks() {
                       to={`/recipes/${bookmark.id}`}
                       style={{ textDecoration: "none", color: "black" }}
                     >
-                      <h5>{bookmark.name}</h5>
-                      <p>{bookmark.description}</p>
+                      <h5>{bookmark.titulo}</h5>
+                      <p>{bookmark.descricao}</p>
                     </Link>
                   </div>
                   {bookmark.isBookmarked ? (

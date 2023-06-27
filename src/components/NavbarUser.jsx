@@ -11,9 +11,25 @@ function NavbarUser() {
 
   const { logout } = useContext(AuthContext);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/logout/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        logout();
+        navigate("/");
+      } else {
+        alert("Logout failed. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Logout failed. Please try again later.");
+    }
   };
 
   return (

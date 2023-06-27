@@ -22,14 +22,14 @@ function SignupPage() {
       const base64Image = reader.result.split(",")[1];
 
       const userData = {
-        email,
-        password,
+        id: 0,
         username,
-        image: base64Image,
+        password,
+        email,
       };
 
       try {
-        const response = await fetch("api/signup", {
+        const response = await fetch("/cadastro/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -45,7 +45,9 @@ function SignupPage() {
         }
       } catch (error) {
         console.error(error);
-        alert("Não foi possível realizar o cadastro. Tente novamente mais tarde.");
+        alert(
+          "Não foi possível realizar o cadastro. Tente novamente mais tarde."
+        );
       }
     };
 
@@ -69,7 +71,7 @@ function SignupPage() {
           <div className="col-md-6">
             <div className="card">
               <div className="card-body">
-                <h1 className="card-title text-center mb-4">Sign Up</h1>
+                <h1 className="card-title text-center mb-4">Cadastrar-se</h1>
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">
@@ -125,7 +127,7 @@ function SignupPage() {
                   </div>
                   <div className="mb-3">
                     <label htmlFor="file" className="form-label">
-                     Foto do perfil:
+                      Foto do perfil:
                     </label>
                     <input
                       type="file"

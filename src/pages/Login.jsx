@@ -18,7 +18,7 @@ function LoginPage() {
     };
 
     try {
-      const response = await fetch("api/login", {
+      const response = await fetch("/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,9 +48,8 @@ function LoginPage() {
           <div className="col-md-6">
             <div className="card">
               <div className="card-body">
-                <h1 className="card-title text-center mb-4">Login</h1>
+                <h1 className="card-title text-center mb-4">Entrar</h1>
                 <form onSubmit={handleSubmit}>
-                  {/* Form fields */}
                   <div className="mb-3">
                     <label htmlFor="username" className="form-label">
                       Username:
@@ -92,7 +91,7 @@ function LoginPage() {
                         (e.target.style.backgroundColor = "orange")
                       }
                     >
-                      Login
+                      Entrar
                     </button>
                   </div>
                 </form>

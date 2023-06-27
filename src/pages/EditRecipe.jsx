@@ -17,7 +17,7 @@ function EditRecipe() {
 
   const fetchRecipeDetails = async () => {
     try {
-      const response = await fetch(`/api/recipes/${id}`);
+      const response = await fetch(`/receitas/${id}`);
       const recipeData = await response.json();
 
       setTitle(recipeData.title);
@@ -57,13 +57,15 @@ function EditRecipe() {
       id,
       title,
       description,
-      ingredients: ingredients.split(",").map((ingredient) => ingredient.trim()),
+      ingredients: ingredients
+        .split(",")
+        .map((ingredient) => ingredient.trim()),
       instructions,
       image,
     };
 
     try {
-      const response = await fetch(`/api/recipes/${id}`, {
+      const response = await fetch(`/receitas/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

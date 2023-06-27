@@ -16,7 +16,7 @@ function Recipes() {
 
   const fetchRecipes = async () => {
     try {
-      const response = await fetch("");
+      const response = await fetch("/receitas/");
       const data = await response.json();
       setRecipes(data);
     } catch (error) {
@@ -27,7 +27,7 @@ function Recipes() {
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`api/recipes/?search=${searchTerm}`);
+      const response = await fetch(`/receitas/?search=${searchTerm}`);
       const data = await response.json();
       setRecipes(data);
     } catch (error) {
@@ -37,7 +37,7 @@ function Recipes() {
 
   const handleBookmarkToggle = async (recipeId) => {
     try {
-      const response = await fetch(`api/bookmarks/${recipeId}`, {
+      const response = await fetch(`/receitas/salvar/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -128,7 +128,7 @@ function Recipes() {
               >
                 <div className="upper-left-icon"></div>
                 <img
-                  src={`data:image/png;base64,${recipe.imagem}`}
+                  src={recipe.imagem}
                   className="card-img-top"
                   alt={recipe.titulo}
                   style={{ height: "200px", objectFit: "cover" }}

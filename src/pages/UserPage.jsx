@@ -7,19 +7,17 @@ function UserPage() {
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-    // Fetch user information and recipes when the component mounts
     fetchUserInfo();
     fetchUserRecipes();
   }, []);
 
   const fetchUserInfo = async () => {
     try {
-      const response = await fetch("/api/user", {
+      const response = await fetch("/usuario", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        // Include any necessary session or authentication information
       });
 
       if (!response.ok) {
@@ -30,18 +28,16 @@ function UserPage() {
       setUser(data.user);
     } catch (error) {
       console.error("Error fetching user information:", error);
-      // Handle error case, display error message, etc.
     }
   };
 
   const fetchUserRecipes = async () => {
     try {
-      const response = await fetch("/api/user/recipes", {
+      const response = await fetch("/receitas/salvas/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        // Include any necessary session or authentication information
       });
 
       if (!response.ok) {
@@ -49,7 +45,7 @@ function UserPage() {
       }
 
       const data = await response.json();
-      setRecipes(data.recipes);
+      setRecipes(data);
     } catch (error) {
       console.error("Error fetching user recipes:", error);
     }
@@ -88,15 +84,17 @@ function UserPage() {
                   <li className="list-group-item" key={recipe.id}>
                     <div className="d-flex justify-content-between align-items-center">
                       <div>
-                        <h5>{recipe.name}</h5>
-                        <p className="recipe-description">{recipe.description}</p>
+                        <h5>{recipe.titulo}</h5>
+                        <p className="recipe-description">{recipe.descricao}</p>
                       </div>
                       <div>
                         <a href={`/edit-recipe/${recipe.id}`}>
                           <AiFillEdit
                             size={20}
                             color="gray"
-                            onMouseEnter={(e) => (e.target.style.fill = "black")}
+                            onMouseEnter={(e) =>
+                              (e.target.style.fill = "black")
+                            }
                             onMouseLeave={(e) => (e.target.style.fill = "")}
                           />
                         </a>
@@ -108,7 +106,6 @@ function UserPage() {
             </div>
           )}
         </div>
-
       </div>
     </>
   );

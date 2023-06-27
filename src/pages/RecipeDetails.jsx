@@ -22,7 +22,7 @@ function RecipeDetails() {
 
   const fetchRecipe = async (id) => {
     try {
-      const response = await fetch(`/api/recipes/${id}`);
+      const response = await fetch(`/receitas/${id}`);
       const data = await response.json();
       setRecipe(data);
     } catch (error) {
@@ -32,7 +32,7 @@ function RecipeDetails() {
 
   const fetchComments = async (id) => {
     try {
-      const response = await fetch(`/api/recipes/${id}/comments`);
+      const response = await fetch(`/receitas/${id}/comments`);
       const data = await response.json();
       setComments(data);
     } catch (error) {
@@ -42,12 +42,12 @@ function RecipeDetails() {
 
   const handleBookmarkToggle = async () => {
     try {
-      const response = await fetch(`/api/recipes/${id}/bookmark`, {
+      const response = await fetch(`/receitas/salvar/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ isBookmarked: !isBookmarked }),
+        body: JSON.stringify({ id_usuario: 0, id_receita: id }),
       });
 
       if (!response.ok) {
@@ -62,12 +62,12 @@ function RecipeDetails() {
 
   const handleStarClick = async (selectedRating) => {
     try {
-      const response = await fetch(`/api/recipes/${id}/rating`, {
+      const response = await fetch(`/receitas/${id}/avaliacoes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ rating: selectedRating }),
+        body: JSON.stringify({ avaliacao: selectedRating }),
       });
 
       if (!response.ok) {
@@ -153,7 +153,7 @@ function RecipeDetails() {
         console.error("Error submitting comment:", error);
       }
     }
-  };  
+  };
 
   if (!recipe) {
     return (
@@ -173,12 +173,12 @@ function RecipeDetails() {
       <div className="container">
         <div className="row mt-5">
           <div className="col-md-6">
-            <h1>{recipe.title}</h1>
-            <p>{recipe.description}</p>
+            <h1>{recipe.titulo}</h1>
+            <p>{recipe.descricao}</p>
             <h3>Ingredients:</h3>
-            <p>{recipe.ingredients}</p>
+            <p>{recipe.ingredientes}</p>
             <h3>Instruções:</h3>
-            <p>{recipe.instructions}</p>
+            <p>{recipe.instrucoes}</p>
           </div>
           <div className="col-md-6 d-flex flex-column align-items-start align-self-start">
             <div
@@ -186,9 +186,9 @@ function RecipeDetails() {
               style={{ maxWidth: "100%", height: "auto" }}
             >
               <img
-                src={recipe.image}
+                src={recipe.imagem}
                 className="img-fluid"
-                alt={recipe.title}
+                alt={recipe.titulo}
               />
             </div>
             <div className="d-flex justify-content-between align-items-center mt-4 w-100">

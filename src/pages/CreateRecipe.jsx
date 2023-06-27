@@ -42,18 +42,21 @@ function CreateRecipe() {
     e.preventDefault();
 
     const recipeData = {
-      title,
-      description,
-      ingredients,
-      instructions,
-      image,
+      titulo: title,
+      descricao: description,
+      ingredientes: ingredients,
+      instrucoes: instructions,
+      imagem: image,
     };
 
     try {
-      const response = await fetch("/api/recipes", {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("/receitas/criar/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(recipeData),
       });
