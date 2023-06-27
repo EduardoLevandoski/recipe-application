@@ -38,21 +38,21 @@ function SignupPage() {
         });
 
         if (response.ok) {
-          alert("Signup successful!");
+          alert("Cadastro realizado!");
           navigate("/");
         } else {
           throw new Error("Signup failed.");
         }
       } catch (error) {
         console.error(error);
-        alert("Signup failed. Please try again later.");
+        alert("Não foi possível realizar o cadastro. Tente novamente mais tarde.");
       }
     };
 
     if (selectedFile) {
       reader.readAsDataURL(selectedFile);
     } else {
-      alert("Please select an image.");
+      alert("Selecione uma imagem.");
     }
   };
 
@@ -86,7 +86,7 @@ function SignupPage() {
                   </div>
                   <div className="mb-3">
                     <label htmlFor="password" className="form-label">
-                      Password:
+                      Senha:
                     </label>
                     <input
                       type="password"
@@ -99,7 +99,7 @@ function SignupPage() {
                   </div>
                   <div className="mb-3">
                     <label htmlFor="confirmPassword" className="form-label">
-                      Confirm Password:
+                      Confirmar senha:
                     </label>
                     <input
                       type="password"
@@ -112,7 +112,7 @@ function SignupPage() {
                   </div>
                   <div className="mb-3">
                     <label htmlFor="username" className="form-label">
-                      Username:
+                      Nome de usuário:
                     </label>
                     <input
                       type="text"
@@ -125,7 +125,7 @@ function SignupPage() {
                   </div>
                   <div className="mb-3">
                     <label htmlFor="file" className="form-label">
-                      Profile Picture:
+                     Foto do perfil:
                     </label>
                     <input
                       type="file"
@@ -151,7 +151,7 @@ function SignupPage() {
                         (e.target.style.backgroundColor = "orange")
                       }
                     >
-                      Sign Up
+                      Cadastrar-se
                     </button>
                   </div>
                 </form>

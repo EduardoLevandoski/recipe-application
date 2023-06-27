@@ -10,7 +10,7 @@ function Navbar() {
     <nav className="navbar navbar-expand-lg navbar-light" style={navbarStyle}>
       <div className="container">
         <a className="navbar-brand" href="/">
-          Recipes
+          Receitas
         </a>
 
         <button
@@ -29,12 +29,12 @@ function Navbar() {
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
               <a className="nav-link" href="/login">
-                Login
+                Entrar
               </a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/signup">
-                Sign Up
+                Cadastrar-se
               </a>
             </li>
           </ul>

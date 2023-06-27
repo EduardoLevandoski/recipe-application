@@ -27,6 +27,8 @@ function LoginPage() {
       });
 
       if (response.ok) {
+        const { token } = await response.json();
+        localStorage.setItem("token", token);
         login();
         navigate("/");
       } else {

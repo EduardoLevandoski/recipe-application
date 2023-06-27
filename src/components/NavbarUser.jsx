@@ -20,7 +20,7 @@ function NavbarUser() {
     <nav className="navbar navbar-expand-lg navbar-light" style={navbarStyle}>
       <div className="container">
         <a className="navbar-brand" href="/">
-          Recipes
+          Receitas
         </a>
 
         <button
@@ -57,8 +57,8 @@ function NavbarUser() {
                   <BsPerson size={25} />
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item href="/user-info">User Info</Dropdown.Item>
-                  <Dropdown.Item onClick={handleLogout}>Leave</Dropdown.Item>
+                  <Dropdown.Item href="/user-info">Seus dados</Dropdown.Item>
+                  <Dropdown.Item onClick={handleLogout}>Sair</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </li>

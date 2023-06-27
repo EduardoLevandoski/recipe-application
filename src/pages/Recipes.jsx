@@ -16,7 +16,7 @@ function Recipes() {
 
   const fetchRecipes = async () => {
     try {
-      const response = await fetch("api/recipes");
+      const response = await fetch("");
       const data = await response.json();
       setRecipes(data);
     } catch (error) {
@@ -90,7 +90,7 @@ function Recipes() {
     <div>
       <div className="container mt-4">
         <div className="d-flex align-items-center justify-content-between mb-3">
-          <h1 className="me-auto">Recipes</h1>
+          <h1 className="me-auto">Receitas</h1>
           <form
             onSubmit={handleSearch}
             className="input-group"
@@ -100,7 +100,7 @@ function Recipes() {
               id="search-input"
               type="search"
               className="form-control"
-              placeholder="Search"
+              placeholder="Pesquisar"
               style={{ width: "200px" }}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -128,13 +128,13 @@ function Recipes() {
               >
                 <div className="upper-left-icon"></div>
                 <img
-                  src={recipe.image}
+                  src={`data:image/png;base64,${recipe.imagem}`}
                   className="card-img-top"
-                  alt={recipe.title}
+                  alt={recipe.titulo}
                   style={{ height: "200px", objectFit: "cover" }}
                 />
                 <div className="card-body">
-                  <h5 className="card-title">{recipe.title}</h5>
+                  <h5 className="card-title">{recipe.titulo}</h5>
                   <div className="d-flex align-items-center">
                     <div className="me-auto">
                       {renderStarRating(recipe.rating)}

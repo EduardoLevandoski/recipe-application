@@ -136,10 +136,12 @@ function RecipeDetails() {
     e.preventDefault();
     if (comment.trim() !== "") {
       try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`/api/recipes/${id}/comments`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ comment }),
         });
@@ -151,7 +153,7 @@ function RecipeDetails() {
         console.error("Error submitting comment:", error);
       }
     }
-  };
+  };  
 
   if (!recipe) {
     return (
@@ -160,7 +162,7 @@ function RecipeDetails() {
         style={{ height: "100vh" }}
       >
         <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Carregando...</span>
         </Spinner>
       </div>
     );
@@ -174,12 +176,8 @@ function RecipeDetails() {
             <h1>{recipe.title}</h1>
             <p>{recipe.description}</p>
             <h3>Ingredients:</h3>
-            <ul>
-              {recipe.ingredients.map((ingredient, index) => (
-                <li key={index}>{ingredient}</li>
-              ))}
-            </ul>
-            <h3>Instructions:</h3>
+            <p>{recipe.ingredients}</p>
+            <h3>Instruções:</h3>
             <p>{recipe.instructions}</p>
           </div>
           <div className="col-md-6 d-flex flex-column align-items-start align-self-start">
@@ -222,7 +220,7 @@ function RecipeDetails() {
                 <textarea
                   className="form-control"
                   rows="4"
-                  placeholder="Write a comment..."
+                  placeholder="Escrever um comentário..."
                   value={comment}
                   onChange={handleCommentChange}
                 ></textarea>
@@ -239,7 +237,7 @@ function RecipeDetails() {
                     (e.target.style.backgroundColor = "orange")
                   }
                 >
-                  Send Comment
+                  Enviar comentário
                 </button>
               </div>
               <div>

@@ -52,7 +52,6 @@ function UserPage() {
       setRecipes(data.recipes);
     } catch (error) {
       console.error("Error fetching user recipes:", error);
-      // Handle error case, display error message, etc.
     }
   };
 
@@ -81,32 +80,35 @@ function UserPage() {
           </div>
         )}
         <div className="row mt-5">
-          <div className="col-md-12">
-            <h3>Your Recipes</h3>
-            <ul className="list-group mt-4">
-              {recipes.map((recipe) => (
-                <li className="list-group-item" key={recipe.id}>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <h5>{recipe.name}</h5>
-                      <p className="recipe-description">{recipe.description}</p>
+          {recipes.length > 0 && (
+            <div className="col-md-12">
+              <h3>Suas receitas</h3>
+              <ul className="list-group mt-4">
+                {recipes.map((recipe) => (
+                  <li className="list-group-item" key={recipe.id}>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div>
+                        <h5>{recipe.name}</h5>
+                        <p className="recipe-description">{recipe.description}</p>
+                      </div>
+                      <div>
+                        <a href={`/edit-recipe/${recipe.id}`}>
+                          <AiFillEdit
+                            size={20}
+                            color="gray"
+                            onMouseEnter={(e) => (e.target.style.fill = "black")}
+                            onMouseLeave={(e) => (e.target.style.fill = "")}
+                          />
+                        </a>
+                      </div>
                     </div>
-                    <div>
-                      <a href={`/edit-recipe/${recipe.id}`}>
-                        <AiFillEdit
-                          size={20}
-                          color="gray"
-                          onMouseEnter={(e) => (e.target.style.fill = "black")}
-                          onMouseLeave={(e) => (e.target.style.fill = "")}
-                        />
-                      </a>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
+
       </div>
     </>
   );

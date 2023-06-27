@@ -4,9 +4,9 @@ import NavbarUser from "../components/NavbarUser";
 function CreateRecipe() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [ingredients, setIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -16,20 +16,8 @@ function CreateRecipe() {
     setDescription(e.target.value);
   };
 
-  const handleIngredientsChange = (e, index) => {
-    const updatedIngredients = [...ingredients];
-    updatedIngredients[index] = e.target.value;
-    setIngredients(updatedIngredients);
-  };
-
-  const handleAddIngredient = () => {
-    setIngredients([...ingredients, ""]);
-  };
-
-  const handleRemoveIngredient = (index) => {
-    const updatedIngredients = [...ingredients];
-    updatedIngredients.splice(index, 1);
-    setIngredients(updatedIngredients);
+  const handleIngredientsChange = (e) => {
+    setIngredients(e.target.value);
   };
 
   const handleInstructionsChange = (e) => {
@@ -37,7 +25,17 @@ function CreateRecipe() {
   };
 
   const handleImageChange = (e) => {
-    setImage(e.target.value);
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      const base64String = reader.result;
+      setImage(base64String);
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -66,9 +64,9 @@ function CreateRecipe() {
 
       setTitle("");
       setDescription("");
-      setIngredients([]);
+      setIngredients("");
       setInstructions("");
-      setImage("");
+      setImage(null);
     } catch (error) {
       console.error("Error creating recipe:", error);
     }
@@ -78,7 +76,7 @@ function CreateRecipe() {
     <>
       <NavbarUser />
       <div className="container mt-4">
-        <h1>Create Recipe</h1>
+        <h1>Criar receita</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3 mt-4">
             <label htmlFor="title" className="form-label">
@@ -95,7 +93,7 @@ function CreateRecipe() {
           </div>
           <div className="mb-3">
             <label htmlFor="description" className="form-label">
-              Description
+              Descrição
             </label>
             <textarea
               className="form-control"
@@ -105,41 +103,19 @@ function CreateRecipe() {
               required
             ></textarea>
           </div>
-          <div>
-            <label className="form-label">Ingredients</label>
-            {ingredients.map((ingredient, index) => (
-              <div key={index} className="input-group mb-2">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={ingredient}
-                  onChange={(e) => handleIngredientsChange(e, index)}
-                  required
-                />
-                <button
-                  type="button"
-                  className="btn btn-outline-danger"
-                  onClick={() => handleRemoveIngredient(index)}
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
+          <div className="mb-3">
+            <label className="form-label">Ingredientes</label>
+            <input
+              type="text"
+              className="form-control"
+              value={ingredients}
+              onChange={handleIngredientsChange}
+              required
+            />
           </div>
-          <button
-            type="button"
-            className="btn btn-outline-primary mb-3"
-            style={{ color: "black", borderColor: "black" }}
-            onClick={handleAddIngredient}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "orange")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = "white")}
-          >
-            Add Ingredient
-          </button>
-
           <div className="mb-3">
             <label htmlFor="instructions" className="form-label">
-              Instructions
+              Instruções
             </label>
             <textarea
               className="form-control"
@@ -151,7 +127,7 @@ function CreateRecipe() {
           </div>
           <div className="mb-3">
             <label htmlFor="image" className="form-label">
-              Image
+              Imagem
             </label>
             <input
               type="file"
@@ -172,7 +148,7 @@ function CreateRecipe() {
               }
               onMouseLeave={(e) => (e.target.style.backgroundColor = "orange")}
             >
-              Create Recipe
+              Criar receita
             </button>
           </div>
         </form>

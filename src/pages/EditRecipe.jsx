@@ -7,7 +7,7 @@ function EditRecipe() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [ingredients, setIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState("");
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState("");
 
@@ -22,7 +22,7 @@ function EditRecipe() {
 
       setTitle(recipeData.title);
       setDescription(recipeData.description);
-      setIngredients([...recipeData.ingredients]);
+      setIngredients(recipeData.ingredients.join(", "));
       setInstructions(recipeData.instructions);
       setImage(recipeData.image);
     } catch (error) {
@@ -38,20 +38,8 @@ function EditRecipe() {
     setDescription(e.target.value);
   };
 
-  const handleIngredientsChange = (e, index) => {
-    const updatedIngredients = [...ingredients];
-    updatedIngredients[index] = e.target.value;
-    setIngredients(updatedIngredients);
-  };
-
-  const handleAddIngredient = () => {
-    setIngredients([...ingredients, ""]);
-  };
-
-  const handleRemoveIngredient = (index) => {
-    const updatedIngredients = [...ingredients];
-    updatedIngredients.splice(index, 1);
-    setIngredients(updatedIngredients);
+  const handleIngredientsChange = (e) => {
+    setIngredients(e.target.value);
   };
 
   const handleInstructionsChange = (e) => {
@@ -69,14 +57,14 @@ function EditRecipe() {
       id,
       title,
       description,
-      ingredients,
+      ingredients: ingredients.split(",").map((ingredient) => ingredient.trim()),
       instructions,
       image,
     };
 
     try {
-      const response = await fetch("/api/recipes", {
-        method: "POST",
+      const response = await fetch(`/api/recipes/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -86,7 +74,7 @@ function EditRecipe() {
       if (response.ok) {
         setTitle("");
         setDescription("");
-        setIngredients([]);
+        setIngredients("");
         setInstructions("");
         setImage("");
         console.log("Recipe updated successfully!");
@@ -102,11 +90,11 @@ function EditRecipe() {
     <>
       <NavbarUser />
       <div className="container mt-4">
-        <h1>Edit Recipe</h1>
+        <h1>Editar receita</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3 mt-4">
             <label htmlFor="title" className="form-label">
-              Title
+              Título
             </label>
             <input
               type="text"
@@ -119,7 +107,7 @@ function EditRecipe() {
           </div>
           <div className="mb-3">
             <label htmlFor="description" className="form-label">
-              Description
+              Descrição
             </label>
             <textarea
               className="form-control"
@@ -129,41 +117,19 @@ function EditRecipe() {
               required
             ></textarea>
           </div>
-          <div>
+          <div className="mb-3">
             <label className="form-label">Ingredients</label>
-            {ingredients.map((ingredient, index) => (
-              <div key={index} className="input-group mb-2">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={ingredient}
-                  onChange={(e) => handleIngredientsChange(e, index)}
-                  required
-                />
-                <button
-                  type="button"
-                  className="btn btn-outline-danger"
-                  onClick={() => handleRemoveIngredient(index)}
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
+            <input
+              type="text"
+              className="form-control"
+              value={ingredients}
+              onChange={handleIngredientsChange}
+              required
+            />
           </div>
-          <button
-            type="button"
-            className="btn btn-outline-primary mb-3"
-            style={{ color: "black", borderColor: "black" }}
-            onClick={handleAddIngredient}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "orange")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = "white")}
-          >
-            Add Ingredient
-          </button>
-
           <div className="mb-3">
             <label htmlFor="instructions" className="form-label">
-              Instructions
+              Instruções
             </label>
             <textarea
               className="form-control"
@@ -175,7 +141,7 @@ function EditRecipe() {
           </div>
           <div className="mb-3">
             <label htmlFor="image" className="form-label">
-              Image
+              Imagem
             </label>
             <input
               type="file"
@@ -196,7 +162,7 @@ function EditRecipe() {
               }
               onMouseLeave={(e) => (e.target.style.backgroundColor = "orange")}
             >
-              Edit Recipe
+              Editar receita
             </button>
           </div>
         </form>
